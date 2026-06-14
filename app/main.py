@@ -1,100 +1,52 @@
-from fastapi import FastAPI, Response, status, HTTPException
+from fastapi import FastAPI, Response, status, HTTPException, Depends
 from fastapi.params import Body
 from pydantic import BaseModel
-from typing import Optional
-from random import randrange
+from typing import Optional, List
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import time
+from . import models, schemas, utilis
+from .database import engine, get_db 
+from sqlalchemy.orm import Session
+from .routers import post, user, auth
 
-app=FastAPI()
+models.Base.metadata.create_all(bind=engine)
 
-class Post(BaseModel):
-    title: str
-    content: str
-    published: bool= True
-    rating: Optional[int]= None
+app = FastAPI()
+app.include_router(auth.router)
+
+# def get_db():
+#     db=SessionLocal
+#     try:
+#         yield db
+#     finally:
+#         db.close
+
+ 
+
+# class Post(BaseModel):              #Now we are commenting this as we have put all the specs in schemas.py
+#     title: str
+#     content: str
+#     published: bool= True
+# rating: Optional[int]= None         #as it is not in models.py
     
     
-my_posts=[{"title": "title of post 1", "content": "content of post 1", "id": 1}, {"title": "title of post 2", "content": "content of post 2", "id": 2}, {"title": "title of post 3", "content": "content of post 3", "id": 3}]
-
-
-def find_post(id):
-    for post in my_posts:
-        if post["id"]==id:
-            return post
-        
-
-def find_index(id):
-    for i, p in enumerate(my_posts):
-        if p["id"]==id:
-            return i  
-
-
-
-@app.get("/")
-async def root():
-    return {"message": "hii World"}
-
-
-@app.get("/posts")
-def get_posts():
-    return{"data": my_posts}
-
-
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post :Post):    
-    post_dict=post.dict()
-    post_dict['id']=randrange(0, 1000000)
-    my_posts.append(post_dict)
-    return{"data": post_dict}
-
-
-@app.get("/posts/latest")
-def get_latest_post():
-    post=my_posts[len(my_posts)-1]
-    return{"latest_post": post}
-
-
-# USING RESPONSE
-
-# @app.get("/posts/{id}")
-# def get_post(id: int, response: Response):
-#     post = find_post(id)
-#     if not post:
-#         response.status_code=status.HTTP_404_NOT_FOUND
-#         return{"message": f"post with id: {id} not found!!"}
-#     return{"post": post}
-
-
-
-# USING HTTP EXCEPTION
-# MOST PEREFERED AS IT IS SHORT
-@app.get("/posts/{id}")
-def get_post(id: int):
-    post = find_post(id)
-    if not post:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with id: {id} not found!!")
-    return{"post": post}
-
-
-@app.delete("/posts/{id}")
-def delete_post(id: int):
-    index=find_index(id)
     
-    if index is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with id {id} not found!!")
-    
-    my_posts.pop(index)
-    return{"message": f"post with id {id} was deleted"}
+# DATABASE CONNECTION
 
-
-
-@app.put("/posts/{id}")
-def update_post(id: int ,post:Post):
-    index=find_index(id)
+# while True:
+#     try:
+#         conn= psycopg2.connect(host='localhost', database='fastapi', user='postgres', password='Broker$123', cursor_factory=RealDictCursor)
+#         cursor= conn.cursor()
+#         print("success")
+#         break
     
-    if index is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with id {id} not found!!")
+#     except Exception as error:
+#         print(error)
+#         time.sleep(10)
+
     
-    post_dict=post.dict()
-    post_dict["id"]=id
-    my_posts[index]=post_dict
-    return{"data": post_dict}
+app.include_router(post.router)
+app.include_router(user.router)
+app.include_router(auth.router)
+
