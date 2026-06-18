@@ -8,12 +8,27 @@ import time
 from . import models, schemas, utilis
 from .database import engine, get_db 
 from sqlalchemy.orm import Session
-from .routers import post, user, auth
+from .routers import post, user, auth, vote
+from fastapi.middleware.cors import CORSMiddleware
 
-models.Base.metadata.create_all(bind=engine)
+# models.Base.metadata.create_all(bind=engine)
+
+origins=["https://www.google.com"]
 
 app = FastAPI()
 app.include_router(auth.router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
+def test():
+    return{"Hello world"}
 
 # def get_db():
 #     db=SessionLocal
@@ -49,4 +64,4 @@ app.include_router(auth.router)
 app.include_router(post.router)
 app.include_router(user.router)
 app.include_router(auth.router)
-
+app.include_router(vote.router)
