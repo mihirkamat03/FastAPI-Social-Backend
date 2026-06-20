@@ -13,14 +13,18 @@ A robust, production-ready RESTful API built with FastAPI and PostgreSQL. This p
 - **Data Security:** Integrated passlib and bcrypt algorithms for secure, one-way password hashing before storing credentials
 - **Advanced Data Validation:** Utilized Pydantic v2 (pydantic-settings) for strict schema validation, response modeling, and secure environment variable management.
 - **Relational Mapping:** Built fully functional users and posts endpoints with Foreign Key constraints to ensure data integrity and track post ownership.
+- **Database Version Control:** Integrated Alembic to track and manage database schema changes, ensuring smooth and predictable production deployments.
+- **Automated Testing Architecture:** Built a comprehensive integration testing suite using Pytest, featuring dedicated testing databases, custom fixtures, and API client simulation to ensure 100% endpoint reliability.
 
 ## Tech Stack
 - **Language:** Python
 - **Framework:** FastAPI
 - **Database:** PostgreSQL
 - **ORM:** SQLAlchemy
+- **Migrations:** Alembic
 - **Security:** JWT (`python-jose`) & `passlib`
 - **Configuration:** Pydantic-Settings
+- **Testing:** Pytest
 - **Server:** Uvicorn (ASGI)
 
 ---
@@ -59,7 +63,7 @@ source venv/bin/activate
 ### 3. Install Dependencies
 
 ```bash
-pip install fastapi "uvicorn[standard]" sqlalchemy psycopg2 passlib[bcrypt] python-jose pydantic-settings
+pip install fastapi "uvicorn[standard]" sqlalchemy psycopg2 passlib[bcrypt] python-jose pydantic-settings alembic pytest
 ```
 ---
 
