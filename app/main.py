@@ -15,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 origins=["https://www.google.com"]
 
-app = FastAPI()
+app = FastAPI(title="Social Media REST API", description="A production-ready backend engine for user authentication and post management.", version="1.0.0")
 app.include_router(auth.router)
 
 app.add_middleware(

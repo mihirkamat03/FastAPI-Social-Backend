@@ -1,11 +1,11 @@
-from pydantic import  BaseModel, EmailStr,conint
+from pydantic import  BaseModel, EmailStr,conint, Field
 from datetime import datetime
 from typing import Optional
 
 class PostBase(BaseModel):
-    title: str
-    content: str
-    published: bool = True
+    title: str = Field(..., title="Title of the Post", description="Must be at least 3 characters long", min_length=3)
+    content: str = Field(..., description="The main body of the post")
+    published: bool = Field(True, description="Set to false to save as a draft")
 
 class PostCreate(PostBase):
     pass
