@@ -82,5 +82,5 @@ jobs:
     needs: [build]
 
     steps:
-      -name: deploying stuffs
-      run:echo "deploying now..."
+      - name: deploying stuffs
+        run:echo "deploying now..."
