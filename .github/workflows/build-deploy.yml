@@ -83,4 +83,4 @@ jobs:
 
     steps:
       - name: deploying stuffs
-        run:echo "deploying now..."
+        run: echo "deploying now..."
